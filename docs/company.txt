@@ -1,0 +1,9 @@
+Muse IT Solutions is a small consultancy that builds web applications, data pipelines and AI-powered tools for clients.
+
+The company was founded in 2020 and works remotely with customers in Europe and North America.
+
+Our main services are custom software development, cloud migration to AWS and Azure, and building chatbots with retrieval-augmented generation (RAG).
+
+Support hours are Monday to Friday, 9:00 to 17:00 EST. Urgent issues can be reported by email and are answered within four hours.
+
+Projects are billed either at a fixed price or at an hourly rate of 85 dollars. A typical RAG chatbot project takes two to four weeks.
