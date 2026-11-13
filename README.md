@@ -11,7 +11,7 @@ A tiny Retrieval-Augmented Generation chatbot in ~45 lines of Python. It answers
 ## Run
 ```bash
 pip install -r requirements.txt
-export ANTHROPIC_API_KEY=your-key
+cp .env.example .env   # then put your Anthropic API key in .env
 uvicorn app:app --reload
 ```
 

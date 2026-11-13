@@ -3,13 +3,15 @@ import glob
 
 import anthropic
 import faiss
-from fastapi import FastAPI
+from dotenv import load_dotenv
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from sentence_transformers import SentenceTransformer
 
+load_dotenv()  # loads ANTHROPIC_API_KEY from the .env file
 app = FastAPI(title="RAG Chatbot")
 embedder = SentenceTransformer("all-MiniLM-L6-v2")  # local embedding model
-llm = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY from the environment
+llm = anthropic.Anthropic()  # reads ANTHROPIC_API_KEY from the environment (set by .env)
 
 # 1. Load documents and split them into paragraph-sized chunks
 chunks = [
@@ -38,10 +40,13 @@ def chat(body: Question, k: int = 3):
 
     # 4. Generate an answer grounded in the retrieved context
     context = "\n\n".join(sources)
-    reply = llm.messages.create(
-        model="claude-sonnet-5-5",
-        max_tokens=500,
-        system="Answer using only the provided context. If the answer is not there, say you don't know.",
-        messages=[{"role": "user", "content": f"Context:\n{context}\n\nQuestion: {body.question}"}],
-    )
+    try:
+        reply = llm.messages.create(
+            model="claude-sonnet-5-5",
+            max_tokens=500,
+            system="Answer using only the provided context. If the answer is not there, say you don't know.",
+            messages=[{"role": "user", "content": f"Context:\n{context}\n\nQuestion: {body.question}"}],
+        )
+    except anthropic.APIStatusError as e:
+        raise HTTPException(status_code=502, detail=f"Anthropic API error: {e.message}")
     return {"answer": reply.content[0].text, "sources": sources}
